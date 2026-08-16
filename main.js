@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { getDatabase, ref, query, limitToLast, onValue, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 // Import Google Maps
 (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})({
@@ -15,14 +15,39 @@ let map;
 let currentCenter;
 let centerLat;
 let centerLng;
+
+
 async function init() {
     // Import the needed libraries
     const { Map } = await google.maps.importLibrary('maps');
-
     // Create a new map from the div with id="map".
     map = new Map(document.getElementById('google-map'), {
-        center: { lat: -34.397, lng: 150.644 },
-        zoom: 8,
+        center: { lat: 40.3430942, lng:-74.6550739 },
+        zoom:14.9,
+        disableDefaultUI:true,
+        styles: [{
+            "featureType": "all",
+            "elementType": "all",
+            "stylers": [{
+                    "hue": "#ff8900"
+                },
+                {
+                    "weight": "0.81"
+                },
+                {
+                    "visibility": "on"
+                },
+                {
+                    "saturation": "-7"
+                },
+                {
+                    "lightness": "10"
+                },
+                {
+                    "gamma": "1.02"
+                }
+            ]
+        }]
     });
 
     console.log(map);
@@ -85,3 +110,31 @@ button.addEventListener('click', () => {
   });
 });
 
+
+const recentClicksQuery = query(clicksRef, limitToLast(10));
+let markers;
+
+onValue(recentClicksQuery, (snapshot) => {
+    
+    if (snapshot.exists()) {
+        const data = snapshot.val();
+        
+        // Loop through the 10 items
+        markers = Object.values(data).map(entry => ({
+            lat: entry.lat,
+            lng: entry.lng,
+            timestamp: entry.timestamp
+        }));
+
+        // Create markers
+        markers.forEach(data => {
+            new google.maps.Marker({
+                map: map,
+                position: { lat: data.lat, lng: data.lng },
+                title: `Logged: ${data.timestamp}`
+            });
+        });
+    } else {
+        console.log("No data found.");
+    }
+});
