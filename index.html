@@ -7,12 +7,30 @@
         <link href="style.css" rel="stylesheet">
     </head>
     <body>
-        <div class="container">
-            <div id="google-map">
+        <div class="parent-container">
+            <div class="container" id="map-container">
+                <div id="google-map"></div>
+                <div id="center-pin">📍</div>
             </div>
+
+            <div class="container" id="active-container">
+                <button id="myButton">Confirm</button>
+                <h1 id="status">hi baddie</h1>
+            </div>
+
+            <div class="container" id="buttons-container">
+                <div id="button-grid">
+                    <button class="grid-btn" >Button 1</button>
+                    <button class="grid-btn">Button 2</button>
+                    <button class="grid-btn">Button 3</button>
+                    <button class="grid-btn">Button 4</button>
+                    <button class="grid-btn">Button 5</button>
+                    <button class="grid-btn">Button 6</button>
+                </div>
+            </div>
+
         </div>
-        <button id="myButton">Add Random Location</button>
-        <h1 id="status">hi baddie</h1>
+        
         <script type="module" src="main.js"></script>
     </body>
 </html>
