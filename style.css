@@ -8,6 +8,7 @@ html {
 
 body {
     background:#d96a10;
+    padding:20px;
 }
 
 .parent-container {
@@ -26,7 +27,21 @@ body {
     aspect-ratio:1;
 }
 
-#buttons-container {
+#confirm-loc-ctn {
+    display:none;
+    flex-direction: column;
+}
+
+#add-loc-output {
+    display:none;
+}
+
+#myButton {
+    width:100%;
+    margin-top:10px;
+}
+
+#home-buttons-container {
     display:flex;
     justify-content: flex-end;
 }
@@ -37,6 +52,7 @@ body {
     grid-template-columns: repeat(2, 1fr);
     gap: 12px; /* Spacing between buttons */
     grid-template-columns: 150px 150px;
+    margin: 20px 0px; /* y-ax x-ax */
 }
 
 .grid-btn {
@@ -64,4 +80,13 @@ body {
     pointer-events: none; 
     z-index: 10;
     font-size:32px;
+    display:none;
+}
+
+#back-btn {
+    position:absolute;
+    transform: translate(-30%, -30%); 
+    z-index: 10;
+    font-size:30px;
+    display:none;
 }
