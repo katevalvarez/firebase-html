@@ -8,27 +8,49 @@
     </head>
     <body>
         <div class="parent-container">
+            
             <div class="container" id="map-container">
+                <button id="back-btn">⬅️</button>
                 <div id="google-map"></div>
                 <div id="center-pin">📍</div>
             </div>
 
-            <div class="container" id="active-container">
-                <button id="myButton">Confirm</button>
-                <h1 id="status">hi baddie</h1>
+            <div class="container" id="confirm-loc-ctn">
+                <form id="loc-form" enctype="multipart/form-data">
+                    <div class="form-row">
+                        <label for="locName" class="label-box">LOCATION NAME</label>
+                        <input type="text" id="locName" name="locName" class="text-input">
+                    </div>
+                    <div class="form-row">
+                        <label for="yourName" class="label-box">YOUR NAME</label>
+                        <input type="text" id="yourName" name="yourName" class="text-input" required>
+                    </div>
+                    <div class="form-row">
+                        <label for="uploadImg" class="label-box">UPLOAD IMAGE</label>
+                        <input type="file" id="uploadImg" name="uploadImg" accept="image/png, image/jpeg, image/webp" >
+                    </div>
+                    <div class="form-row">
+                        <button id="myButton">Confirm Sighting</button>
+                    </div>
+                </form>
             </div>
 
-            <div class="container" id="buttons-container">
+            <div class="container" id="add-loc-output">
+                <p id="status"></p>
+                <button id="back-to-home">Back to home</button>
+            </div>
+            
+
+            <div class="container" id="home-buttons-container">
                 <div id="button-grid">
-                    <button class="grid-btn" >Button 1</button>
-                    <button class="grid-btn">Button 2</button>
-                    <button class="grid-btn">Button 3</button>
+                    <button class="grid-btn" id="center-loc">CENTER LOC</button>
+                    <button class="grid-btn" id="add-loc">ADD LOC</button>
+                    <button class="grid-btn" id="terrain">TERRAIN</button>
                     <button class="grid-btn">Button 4</button>
-                    <button class="grid-btn">Button 5</button>
+                    <button class="grid-btn" id="3d-view">3D VIEW</button>
                     <button class="grid-btn">Button 6</button>
                 </div>
             </div>
-
         </div>
         
         <script type="module" src="main.js"></script>
