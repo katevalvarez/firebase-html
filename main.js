@@ -15,15 +15,16 @@ let map;
 let currentCenter;
 let centerLat;
 let centerLng;
-
+const initCenter = { lat: 40.3430942, lng:-74.6550739 };
+const initZoom = 14.9;
 
 async function init() {
     // Import the needed libraries
     const { Map } = await google.maps.importLibrary('maps');
     // Create a new map from the div with id="map".
     map = new Map(document.getElementById('google-map'), {
-        center: { lat: 40.3430942, lng:-74.6550739 },
-        zoom:14.9,
+        center: initCenter,
+        zoom:initZoom,
         disableDefaultUI:true,
         styles: [{
             "featureType": "all",
@@ -92,9 +93,21 @@ const dateString = new Date().toLocaleDateString('en-US', {
 // Reference to 'clicks' node in the database
 const clicksRef = ref(db, 'clicks');
 const button = document.getElementById('myButton');
+const centerPin = document.getElementById("center-pin");
+const confirmLocCont = document.getElementById("confirm-loc-ctn");
+const addLocOutput = document.getElementById("add-loc-output");
+
+const form = document.getElementById('loc-form');
+let locName;
+let yourName;
+let imgInput;
 
 // Uploads coords to database
-button.addEventListener('click', () => {
+button.addEventListener('click', function(event) {
+    event.preventDefault();
+    locName = document.getElementById('locName').value;
+    yourName = document.getElementById('yourName').value;
+    imgInput = document.getElementById('uploadImg');
   // Push the random coordinates to Firebase
   push(clicksRef, {
       lat: centerLat,
@@ -103,11 +116,16 @@ button.addEventListener('click', () => {
   }).then(() => {
       // Update HTML text once the write succeeds
       const statusHeading = document.getElementById('status');
-      statusHeading.textContent = `I placed lat (${centerLat}) and lng (${centerLng}) into the database`;
+      statusHeading.textContent = `I placed lat (${centerLat}) and lng (${centerLng}) into the database. locname = ${locName}. yourname = ${yourName}. img = ${imgInput}`;
   }).catch((error) => {
       console.error("Error writing to database: ", error);
       document.getElementById('status').textContent = "Failed to write data. Check console for details.";
   });
+  button.style.display = 'none';
+  confirmLocCont.style.display = 'none';
+  addLocOutput.style.display = 'block';
+  backButton.style.display = 'none';
+  centerPin.style.display = 'none';
 });
 
 
@@ -138,3 +156,48 @@ onValue(recentClicksQuery, (snapshot) => {
         console.log("No data found.");
     }
 });
+
+const addLocButton = document.getElementById("add-loc");
+const backButton = document.getElementById("back-btn");
+const homeButtonsCont = document.getElementById("home-buttons-container");
+
+addLocButton.addEventListener('click', ()=> {
+    confirmLocCont.style.display = 'flex';
+    backButton.style.display = 'block';
+    centerPin.style.display = 'block';
+    homeButtonsCont.style.display = 'none';
+    myButton.style.display = 'block';
+})
+
+backButton.addEventListener('click', ()=> {
+    confirmLocCont.style.display = 'none';
+    backButton.style.display = 'none';
+    centerPin.style.display = 'none';
+    homeButtonsCont.style.display = 'flex';
+})
+
+const backToHome = document.getElementById("back-to-home");
+backToHome.addEventListener('click', ()=> {
+    confirmLocCont.style.display = 'none';
+    addLocOutput.style.display = 'none';
+    homeButtonsCont.style.display = 'flex';
+})
+
+const centerLocBtn = document.getElementById("center-loc");
+centerLocBtn.addEventListener('click', ()=> {
+    map.panTo(initCenter);
+    map.setZoom(initZoom);
+})
+
+const terrainBtn = document.getElementById("terrain");
+let isTerrainView = false;
+terrainBtn.addEventListener('click', ()=> {
+    isTerrainView = !isTerrainView;
+    if (isTerrainView) {
+        // Switch to topographic/terrain view
+        map.setMapTypeId(google.maps.MapTypeId.TERRAIN);
+    } else {
+        // Switch back to standard roadmap view
+        map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
+    }
+})
