@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>firebase demo</title>
+        <link href="style.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+    <body>
+        <div class="view" id="view-content">
+            <div id="expanded-bg">
+            </div>
+            <div id="expanded-ctn">
+                <div id="expanded-top">
+                    <button id="close-expanded">x</button>
+                </div>
+                <img id="expanded-img" src="sg-car.png">
+                <div id="expanded-caption">
+                    <p>LocName</p>
+                    <p>Spotted by: <span id="expanded-your-name">YourName</span></p>
+                    <p>Spotted on: <span id="expanded-date">Aug 16, 2026</span></p>
+                </div>
+            </div>
+        </div>
+        <div class="parent-container">
+            <div class="container" id="map-container">
+                <button id="back-btn">⬅️</button>
+                <button id="about-btn">ℹ️</button>
+                <button id="close-archive">✖️</button>
+                <button id="close-share">✖️</button>
+                <div id="google-map"></div>
+                <div id="about-content">
+                    <h1>about</h1>
+                    <hr>
+                    <p>
+                        Pton Fox Spotter is a website intended to record sightings of the campus fox at Princeton University. 
+                        <br>
+                        <br>
+                        This website is heavily inspired by the Spidey Tracker as seen in the movie <span style="font-style: italic;">Spiderman: Brand New Day</span> (2026).
+                        <br>
+                        <br>
+                        This website was created by Kate Alvarez '27.
+                        <br>
+                        <br>
+                        <a href="https://www.linkedin.com/in/katevalvarez/" target="_blank" class="linkedin-link" style="color:aliceblue;">
+                            <i style="font-size:20px" class="fa">&#xf08c;</i>@katevalvarez
+                        </a>
+                    </p>
+                </div>
+                <div id="archive-content">
+                    <p>archive</p>
+                    <div id="location-list"></div>
+                </div>
+                <div id="share-content">
+                    <div id="share-text">
+                        <p>
+                            Share the fox spotting:
+                            <br>
+                            <br>
+                            <span style="display: block; text-align: center;">
+                                🔗 <a href="https://katevalvarez.github.io/firebase-html/">https://katevalvarez.github.io/firebase-html/</a>
+                            </span>
+                        </p>
+                    </div>
+                </div>
+                <div id="center-pin">📍</div>
+            </div>
+
+            <div class="container" id="confirm-loc-ctn">
+                <form id="loc-form" enctype="multipart/form-data">
+                    <div class="form-row">
+                        <label for="locName" class="label-box">LOCATION NAME</label>
+                        <input type="text" id="locName" name="locName" class="text-input">
+                    </div>
+                    <div class="form-row">
+                        <label for="yourName" class="label-box">YOUR NAME</label>
+                        <input type="text" id="yourName" name="yourName" class="text-input" required>
+                    </div>
+                    <div class="form-row">
+                        <label for="uploadImg" class="label-box">UPLOAD IMAGE</label>
+                        <input type="file" id="uploadImg" name="uploadImg" accept="image/png, image/jpeg, image/webp" >
+                    </div>
+                    <div class="form-row">
+                        <button id="myButton">Confirm Sighting</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="container" id="add-loc-output">
+                <p id="status"></p>
+                <button id="back-to-home">Back to home</button>
+            </div>
+            
+
+            <div class="container" id="home-buttons-container">
+                <div id="button-grid">
+                    <button class="grid-btn" id="center-loc">CENTER LOC</button>
+                    <button class="grid-btn" id="add-loc">ADD LOC</button>
+                    <button class="grid-btn" id="terrain">TERRAIN</button>
+                    <button class="grid-btn" id="archive">ARCHIVE</button>
+                    <button class="grid-btn" id="three-d-view"></button>
+                    <button class="grid-btn" id="share">SHARE</button>
+                </div>
+            </div>
+        </div>
+
+        
+        
+        <script type="module" src="main.js"></script>
+    </body>
+</html>
