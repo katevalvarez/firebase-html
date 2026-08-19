@@ -10,6 +10,8 @@ key: "AIzaSyCoCXtc1E_jk_DrT-ypXjszx_ObmKPW7JM",
 v: "weekly",
 });
 
+// imgbb API KEY: dd8f112bf20cf3994489f802594c4155
+
 /*
 * Google Map
 */
@@ -107,35 +109,65 @@ const form = document.getElementById('loc-form');
 let locName;
 let yourName;
 let imgInput;
+let finalImgUrl;
+let finalImgDispUrl;
 
 // Uploads form data to database
-button.addEventListener('click', function(event) {
+button.addEventListener('click', async function(event) {
     event.preventDefault();
     locName = document.getElementById('locName').value;
     yourName = document.getElementById('yourName').value;
     imgInput = document.getElementById('uploadImg'); // DOM element
     const img = imgInput.files[0]; // File data type, has .type, .name, .size
+    
+    // send request to imgbb
+    async function uploadImg(img) {
+        // prepares form data to upload image
+        const formData = new FormData();
+        formData.append('image', img);
 
-  // Push the coordinates to Firebase
-  push(clicksRef, {
-      lat: centerLat,
-      lng: centerLng,
-      timestamp: dateString,
-      locname: locName,
-      yourname: yourName,
-  }).then(() => {
-      // Update HTML text once the write succeeds
-      const statusHeading = document.getElementById('status');
-      statusHeading.textContent = `I placed lat (${centerLat}) and lng (${centerLng}) into the database. locname = ${locName}. yourname = ${yourName}. img = ${imgInput}`;
-  }).catch((error) => {
-      console.error("Error writing to database: ", error);
-      document.getElementById('status').textContent = "Failed to write data. Check console for details.";
-  });
-  button.style.display = 'none';
-  confirmLocCont.style.display = 'none';
-  addLocOutput.style.display = 'block';
-  backButton.style.display = 'none';
-  centerPin.style.display = 'none';
+        const response = await fetch(`https://api.imgbb.com/1/upload?key=dd8f112bf20cf3994489f802594c4155`, {
+            method: 'POST',
+            body: formData,
+        });
+
+        // parse the response from imgBB and get the url for the image.
+        const res = await response.json();
+        console.log('imgbb response:', res); // inspect this in devtools
+
+        if (res.success) {
+            finalImgUrl = res.data.url;
+            finalImgDispUrl = res.data.display_url;
+        }
+    }
+    
+    await uploadImg(img);
+
+    // Push the coordinates to Firebase
+    push(clicksRef, {
+        lat: centerLat,
+        lng: centerLng,
+        timestamp: dateString,
+        locname: locName,
+        yourname: yourName,
+        imgurl: finalImgUrl,
+        dispurl: finalImgDispUrl
+    }).then(() => {
+        // Update HTML text once the write succeeds
+        const statusHeading = document.getElementById('status');
+        statusHeading.textContent = `I placed lat (${centerLat}) and lng (${centerLng}) into the database. locname = ${locName}. yourname = ${yourName}. img = ${imgInput}`;
+    }).catch((error) => {
+        console.error("Error writing to database: ", error);
+        document.getElementById('status').textContent = "Failed to write data. Check console for details.";
+    });
+
+    // confirmed added location page
+    button.style.display = 'none';
+    confirmLocCont.style.display = 'none';
+    addLocOutput.style.display = 'block';
+    backButton.style.display = 'none';
+    centerPin.style.display = 'none';
+
 });
 
 // Fetch and display markers
@@ -155,6 +187,7 @@ onValue(recentClicksQuery, (snapshot) => {
             locname: entry.locname,
             yourname: entry.yourname,
             timestamp: entry.timestamp,
+            imgurl: entry.imgurl
         }));
 
         // Place Markers onto map
@@ -174,7 +207,7 @@ onValue(recentClicksQuery, (snapshot) => {
                 const infoWindowContent = `
                     <div class="info-window-content">
                         <div id="info-img-ctn">
-                            <img id="info-window-img" src="sg-car.png">
+                            <img id="info-window-img" src="${data.imgurl}">
                         </div>
                         
                         <a href="#" style="font-size:13px;margin-bottom:0px" id="view-sighting">view sighting</a>
@@ -188,8 +221,12 @@ onValue(recentClicksQuery, (snapshot) => {
                     infoWindow.addListener('domready', () => {
                         const viewSighting = document.getElementById("view-sighting");
                         const viewContent = document.getElementById("view-content");
+                        const expImg = document.getElementById("expanded-img");
                         const expCaption = document.getElementById("expanded-caption");
-                        expCaption.textContent=`${data.yourname} ${data.locname}`;
+
+                        expImg.src = `${data.imgurl}`;
+                        expCaption.innerHTML=`${data.locname}<br>${data.yourname}<br>${data.timestamp}`;
+
                         isViewing = false;
                         viewSighting.addEventListener('click', ()=> {
                             event.preventDefault();
