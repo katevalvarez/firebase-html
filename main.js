@@ -108,19 +108,13 @@ let locName;
 let yourName;
 let imgInput;
 
-// Uploads coords to database
+// Uploads form data to database
 button.addEventListener('click', function(event) {
     event.preventDefault();
     locName = document.getElementById('locName').value;
     yourName = document.getElementById('yourName').value;
     imgInput = document.getElementById('uploadImg'); // DOM element
     const img = imgInput.files[0]; // File data type, has .type, .name, .size
-    const imgName = img.name;
-
-    // handle uploading image
-    const imgRef = ref(storage, '${yourName}_${imgName}');
-    const imgImagesRef = ref(storage, 'images/${yourName}_${imgName}');
-    uploadBytes(storageRef, img);
 
   // Push the coordinates to Firebase
   push(clicksRef, {
@@ -129,7 +123,6 @@ button.addEventListener('click', function(event) {
       timestamp: dateString,
       locname: locName,
       yourname: yourName,
-      imginput: imgName,
   }).then(() => {
       // Update HTML text once the write succeeds
       const statusHeading = document.getElementById('status');
@@ -159,6 +152,8 @@ onValue(recentClicksQuery, (snapshot) => {
         markers = Object.values(data).map(entry => ({
             lat: entry.lat,
             lng: entry.lng,
+            locname: entry.locname,
+            yourname: entry.yourname,
             timestamp: entry.timestamp,
         }));
 
@@ -193,6 +188,8 @@ onValue(recentClicksQuery, (snapshot) => {
                     infoWindow.addListener('domready', () => {
                         const viewSighting = document.getElementById("view-sighting");
                         const viewContent = document.getElementById("view-content");
+                        const expCaption = document.getElementById("expanded-caption");
+                        expCaption.textContent=`${data.yourname} ${data.locname}`;
                         isViewing = false;
                         viewSighting.addEventListener('click', ()=> {
                             event.preventDefault();
