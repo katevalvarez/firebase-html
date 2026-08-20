@@ -58,13 +58,17 @@ body {
     font-size: 14px;
     font-weight: 600;
     color: #ffffff;
-    background-color: var(--secondary);
+    background-color: var(--primary);
     border: none;
     border-radius: 6px;
     cursor: pointer;
     width:100%;
     transition: background-color 0.2s ease, transform 0.1s ease;
     padding:8px 0px;
+}
+
+.grid-btn img{
+    width:100%;
 }
 
 #google-map {
